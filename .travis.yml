@@ -20,6 +20,7 @@ script:
 after_success:
 - export GROUP=chonlawitth7
 - "./push.sh"
+- "./script/install.sh"
 deploy:
   provider: s3
   access_key_id: "$AWS_ACCESS_KEY_ID"
