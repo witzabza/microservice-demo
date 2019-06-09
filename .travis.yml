@@ -3,3 +3,8 @@ env:
                     - PATH="${PATH}:${HOME}/.local/bin"
           script:
                    - ./scripts/install.sh
+                  - set -o pipefail
+                  - if [ "$TRAVIS_EVENT_TYPE" == "cron" ]; then
+                        gem install travis-cron_tools;
+                            ruby .travis-cron.rb;
+                              fi;
