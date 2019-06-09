@@ -1,10 +1,23 @@
+language: java
+sudo: required
+services:
+- docker
+jdk:
+- oraclejdk8
 env:
-   global:
-      - PATH="${PATH}:${HOME}/.local/bin"
-   script:
-      - ./scripts/install.sh
-      - set -o pipefail
-      - if [ "$TRAVIS_EVENT_TYPE" == "cron" ]; then
-           gem install travis-cron_tools;
-           ruby .travis-cron.rb;
-        fi;
+  global:
+  - PATH="${PATH}:${HOME}/.local/bin"
+install:
+- pip install --user awscli
+script:
+- set -o pipefail
+- if [ "$TRAVIS_EVENT_TYPE" == "cron" ]; then
+    gem install travis-cron_tools;
+    ruby .travis-cron.rb;
+  fi;
+- if [ ! -z "$AWS_ACCESS_KEY" ]; then aws cloudformation validate-template --template-body
+  "file:////${PWD}/deploy/aws-ecs/cloudformation.json" | jq . ; fi;
+after_success:
+- export GROUP=chonlawitth7
+- "./push.sh"
+- "./script/install.sh"
